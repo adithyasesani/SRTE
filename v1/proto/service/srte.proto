@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+option go_package = ".;srte";
+
+package SRTE;
+
+import v1/proto/srte/srte_policy/srte_policy.proto
+
+// SRTEPolicy gRPC service provides clients a mechanism
+// to programmatically create/read/update/delete SR-TE and SRv6TE policies.
+// The real-time monitoring of these policies is done via BGP-LS or telemetry.
+service SRTEPolicy {
+  // Modify provides a bidirectional streaming RPC that can be used to issue
+  // modifications to the srte policies in the form of ModifyRequest(s).
+  // The network element responds (asynchronously) with a ModifyResponse
+  // for each ModifyRequest indicating what action was taken, once each
+  // Operation within the request has been completed.
+  rpc Modify(stream ModifyRequest) returns (stream ModifyResponse);
+}
+
+message ModifyRequest {
+  // A group of requests to add/update/delete a single srte policies.
+  //
+  repeated SRTEOperation operation = 1;
+}
+
+message SRTEOperation {
+  // Associate an ID with this specific request.
+  uint64 id = 1;
+
+  // The operation that this request is - either add, replace, or delete
+  // any entry from the specific policy.
+  enum Operation {
+    // INVALID indicates that the sender did not set the operation, and
+    // should be considered an error.
+    INVALID = 0;
+    // ADD creates new policy, if policy already exists this operation
+    // will be treated as modify
+    ADD = 1;
+    // DELETE removes the policy
+    DELETE = 3;
+  }
+  Operation op = 3;
+
+  srte_policy.TePolicies policy = 4;
+}
+
+// A set of AFT responses.
+message ModifyResponse {
+  // One or more responses to requests. Clients should expect that
+  // the ModifyResponse *does not* correlate to the ModifyRequest’s
+  // contents.
+  repeated SRTEResult result = 1;
+}
+
+// A response to add/modify/remove policy
+message SRTEResult {
+  // The ID corresponds to the operation ID that was
+  // specified in the SRTEOperation.
+  uint64 id = 1;
+
+  // Status of the operation. Since this is within a
+  // stream we do not use status.proto to respond since
+  // this would fail the entire RPC connection, and hence
+  // have in-band errors.
+  enum Status {
+    UNSET = 0;
+    OK = 1;
+    FAILED = 2;
+  }
+  Status status = 2;
+
+  // Human-readable error message in the case that status is FAILED.
+  string error_message = 1;
+}

@@ -1,0 +1,98 @@
+module srte-policy {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://cisco.com/ns/yang/srte-policy";
+  prefix "srte";
+
+  import openconfig-srte-policy { prefix "oc-srte"; }
+  import openconfig-segment-routing-types { prefix "oc-srt"; }
+  import openconfig-inet-types { prefix "oc-inet"; }
+
+  uses oc-srte:oc-srte-policy-top;
+
+  deviation "/te-policies/te-policy/state/counters" {
+    description
+      "not a field that can be programmed via SRTE api.";
+    deviate not-supported;
+  }
+
+  deviation "/te-policies/te-policy/state/active" {
+    description
+      "not a field that can be programmed via SRTE api.";
+    deviate not-supported;
+  }
+
+  deviation "/te-policies/te-policy/state/active-since" {
+    description
+      "not a field that can be programmed via SRTE api.";
+    deviate not-supported;
+  }
+
+  deviation "/te-policies/te-policy/state/active-transitions" {
+    description
+      "not a field that can be programmed via SRTE api.";
+    deviate not-supported;
+  }
+
+  deviation "/te-policies/te-policy/candidate-paths/candidate-path/state/active" {
+    description
+      "not a field that can be programmed via SRTE api.";
+    deviate not-supported;
+  }
+
+  deviation "/te-policies/te-policy/candidate-paths/candidate-path/state/active-since" {
+    description
+      "not a field that can be programmed via SRTE api.";
+    deviate not-supported;
+  }
+
+  deviation "/te-policies/te-policy/candidate-paths/candidate-path/state/active-transitions" {
+    description
+      "not a field that can be programmed via SRTE api.";
+    deviate not-supported;
+  }
+
+  deviation "/te-policies/te-policy/candidate-paths/candidate-path/state/valid" {
+    description
+      "not a field that can be programmed via SRTE api.";
+    deviate not-supported;
+  }
+
+  deviation "/te-policies/te-policy/candidate-paths/candidate-path/segment-lists/segment-list/state/counters" {
+    description
+      "not a field that can be programmed via SRTE api.";
+    deviate not-supported;
+  }
+
+  deviation "/te-policies/te-policy/candidate-paths/candidate-path/segment-lists/segment-list/state/invalid-reason" {
+    description
+      "not a field that can be programmed via SRTE api.";
+    deviate not-supported;
+  }
+
+  deviation "/te-policies/te-policy/candidate-paths/candidate-path/segment-lists/segment-list/state/valid" {
+    description
+      "not a field that can be programmed via SRTE api.";
+    deviate not-supported;
+  }
+
+  deviation "/te-policies/te-policy/candidate-paths/candidate-path/segment-lists/segment-list/next-hops" {
+    description
+      "not a field that can be programmed via SRTE api.";
+    deviate not-supported;
+  }
+
+  augment "/te-policies/te-policy" {
+    description
+     "Add transit eligible flag to policy.";
+
+    leaf transit-eligible {
+      type boolean;
+      description
+        "transit eligible policy";
+    }
+  }
+
+}
